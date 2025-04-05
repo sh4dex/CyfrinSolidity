@@ -1,0 +1,26 @@
+# Node
+node_modules/
+
+# Hardhat / Foundry
+artifacts/
+cache/
+out/
+broadcast/
+deployments/
+lib/
+.statedb/
+.states/
+
+# Env
+.env
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+#dependencies
+.deps
+.states
