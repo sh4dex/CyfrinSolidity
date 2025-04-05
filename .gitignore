@@ -1,26 +1,36 @@
-# Node
+# ────────────────────────────────────────────────────────────
+# 🔧 Project dependencies
 node_modules/
+lib/
+.deps/
 
-# Hardhat / Foundry
+# 🛠️ Build and cache
 artifacts/
 cache/
 out/
 broadcast/
 deployments/
-lib/
 .statedb/
 .states/
 
-# Env
+# 🔐 Secrets and environment
 .env
+.env.local
+.env.*.local
 
-# OS-specific
+# 🧪 Testing & coverage
+coverage/
+*.lcov
+
+# 🧼 Editor settings and OS trash
 .DS_Store
 Thumbs.db
+.vscode/
 
-# Logs
-*.log
+# 📄 Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-#dependencies
-.deps
-.states
+# 🧹 Misc
+*.tsbuildinfo
