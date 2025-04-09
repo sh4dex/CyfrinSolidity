@@ -24,9 +24,12 @@ contract FundMe{
         addressToAmountFunded[msg.sender] += msg.value;
     }
 
-    /*
-    function withdra() {
+    
+    function withdra() public {
 
+        for(uint256 funderIndex =0; funderIndex<funders.length ;funderIndex++){
+            addressToAmountFunded[funders[funderIndex]] = 0;
+        }
     }
-    */
+    
 }
