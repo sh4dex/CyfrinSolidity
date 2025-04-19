@@ -30,8 +30,7 @@ contract FundMe{
         addressToAmountFunded[msg.sender] += msg.value;
     }
     
-    function withdra() public {
-
+    function withdraw() public onlyOwner {
         for(uint256 funderIndex =0; funderIndex<funders.length ;funderIndex++){
             addressToAmountFunded[funders[funderIndex]] = 0;
         }
@@ -50,4 +49,9 @@ contract FundMe{
         require(callSuccess, "Call has failed.");
     }
     
+
+    modifier onlyOwner() {
+        require(msg.sender == owner); 
+        _; // Executes first the require and then the code of the function.
+    }
 }
