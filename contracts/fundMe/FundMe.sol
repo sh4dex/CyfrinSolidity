@@ -3,6 +3,11 @@ pragma solidity ^0.8.26;
 
 import {PriceConverter} from "./PriceConverter.sol";
 
+error notOwner();
+error callHasFailed();
+error notEnoughtETH();
+
+//gas: 743,506
 contract FundMe{
     /*
     This conract has the Following functions:
@@ -12,20 +17,20 @@ contract FundMe{
     */
     using PriceConverter for uint256;
 
-    uint256 public minimunUsdAmount = 5e18;
+    uint256 public constant MINIMUN_USD_AMOUNT = 5e18;
 
     address[] public funders;
     mapping(address funder=> uint256 amountFunded) public addressToAmountFunded;
 
-    address public owner;
+    address public immutable i_owner;
 
     constructor (){
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     //The payable keyword indicate that the function can revice ETH.
     function fund() public payable{
-        require(msg.value.getConversionRate() >= minimunUsdAmount, "Not enough ETH avaible to be sent.");
+        if(msg.value.getConversionRate() >= MINIMUN_USD_AMOUNT){revert notEnoughtETH();}
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
     }
@@ -46,12 +51,15 @@ contract FundMe{
         
         //-call
         (bool callSuccess, /*bytes memory dataReturned*/) = payable(msg.sender).call{value: address(this).balance}(""); 
-        require(callSuccess, "Call has failed.");
+        if (callSuccess){ revert callHasFailed();}
     }
     
 
     modifier onlyOwner() {
-        require(msg.sender == owner); 
+        //require(msg.sender == i_owner); 
+        if(msg.sender == i_owner){revert notOwner();}
         _; // Executes first the require and then the code of the function.
     }
+
+    //fallback
 }
