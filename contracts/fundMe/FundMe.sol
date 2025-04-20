@@ -17,7 +17,7 @@ contract FundMe{
     */
     using PriceConverter for uint256;
 
-    uint256 public constant MINIMUN_USD_AMOUNT = 5e18;
+    uint256 public constant MINIMUN_USD_AMOUNT = 1e18;
 
     address[] public funders;
     mapping(address funder=> uint256 amountFunded) public addressToAmountFunded;
@@ -30,9 +30,10 @@ contract FundMe{
 
     //The payable keyword indicate that the function can revice ETH.
     function fund() public payable{
-        if(msg.value.getConversionRate() >= MINIMUN_USD_AMOUNT){revert notEnoughtETH();}
-        funders.push(msg.sender);
+        //require(PriceConverter.getConversionRate(msg.value) >= MINIMUN_USD_AMOUNT, "You need to spend more ETH!");
+        if(msg.value.getConversionRate() <= MINIMUN_USD_AMOUNT){revert notEnoughtETH();}
         addressToAmountFunded[msg.sender] += msg.value;
+        funders.push(msg.sender);
     }
     
     function withdraw() public onlyOwner {
@@ -50,16 +51,17 @@ contract FundMe{
         //require(success, "Send has failed.");
         
         //-call
-        (bool callSuccess, /*bytes memory dataReturned*/) = payable(msg.sender).call{value: address(this).balance}(""); 
-        if (callSuccess){ revert callHasFailed();}
+        (bool callSuccess, /*bytes memory dataReturned*/) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "Error while wihdraw");
+        if (!callSuccess){ revert callHasFailed();}
     }
     
 
     modifier onlyOwner() {
         //require(msg.sender == i_owner); 
-        if(msg.sender == i_owner){revert notOwner();}
+        if(msg.sender != i_owner){revert notOwner();}
         _; // Executes first the require and then the code of the function.
     }
 
-    //fallback
+    //TODO: fallback
 }
